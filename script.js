@@ -1,12 +1,11 @@
 //default
 const defaultCat = document.getElementById("lottie-home");
-const catPath = "cat.json";
 const pawPath = "https://assets2.lottiefiles.com/packages/lf20_ypqxhono.json";
 const button = document.querySelector("button");
 const viewWidth = window.innerWidth;
 const PAW_CURSOR = "fa-paw.png";
-const randomDuration = Math.floor(Math.random() * 8) + 3;
-const randomX = Math.floor(Math.random() * 200) + 200;
+const randomDuration = Math.floor(Math.random() * 4) + 2;
+const randomX = Math.floor(Math.random() * 100) + 100;
 
 //load paw button animation
 const pawAnim = lottie.loadAnimation({
@@ -38,14 +37,19 @@ function createCatAnim(x, y) {
   catContainer.style.cssText = `position: absolute; width: 150px; left: ${x}px; top: ${y}px`;
   document.body.appendChild(catContainer);
 
+  const animalArray = ['https://assets4.lottiefiles.com/datafiles/SCyXtpEBCwgeaNi/data.json', 'https://assets4.lottiefiles.com/packages/lf20_8nP71q.json', 'https://lottie.host/0af5520b-743c-4545-bbca-9ca7517e20bb/HYiQlMsf2M.json','https://lottie.host/61cf7177-1b86-4781-9110-c920f4ce0ed4/5Hxcmw1OeB.json', 'https://assets3.lottiefiles.com/packages/lf20_kehwtvbf.json', 'https://lottie.host/6c5eb6c0-5646-44aa-b4c2-884d6b4d7a21/2oKWmSB1en.json','https://assets3.lottiefiles.com/packages/lf20_xBGyhl.json']
+
+  //can you also get animation time of each items in array? 
+  const randomIndex = Math.floor(Math.random() * animalArray.length);
+  
   const catAnim = lottie.loadAnimation({
     container: catContainer,
     renderer: "svg",
     loop: false,
     autoplay: true,
-    path: catPath,
+    path: animalArray[randomIndex]
   });
-
+ 
   const isLeftSide = x < viewWidth / 2;
   const direction = isLeftSide ? 1 : -1;
   moveCat(catContainer, direction);
@@ -54,61 +58,8 @@ function createCatAnim(x, y) {
     catContainer.style.transform = "rotateY(180deg)";
   }
 
-  catAnim.addEventListener("DOMLoaded", function () {
-    //get path
-    const svgGroup = catAnim.wrapper.childNodes[0].childNodes[1];
-    changeColor(svgGroup)
-  });
 }
 
-function changeColor(parent){
-
-  const randomRGB = () => Math.floor(Math.random() * 106) + 150;
-  const [r, g, b] = [randomRGB(), randomRGB(), randomRGB()];
-  //const eachFill = () => `rgb(${randomRGB()},${randomRGB()},${randomRGB()})`; //this get's each random value for each array
-
-  const bodyNode = parent.childNodes[0];
-  const headNode = parent.childNodes[1];
-
-  //body
-  const bodyPath = bodyNode.childNodes;
-  const bodyArray = [];
-  bodyPath.forEach((child) => {
-    const childNodes = child.childNodes;
-    for (let i = 0; i < childNodes.length; i++) {
-      bodyArray.push(childNodes[i]);
-    }
-  });
-
-  //exclude certain parts of body
-  const filteredBody = bodyArray.filter(
-    (_, index) =>
-      index === bodyArray.length - 1 ||
-      index === bodyArray.length - 2 ||
-      index === 1 ||
-      index === 2
-  );
-  const certainColorOfBody = bodyArray.filter(
-    (_, index) => !filteredBody.includes(bodyArray[index])
-  );
-
-  certainColorOfBody.forEach((node) =>
-    node.setAttribute("fill", `rgb(${r},${g},${b})`)
-  );
-
-  //head
-  const headPath = headNode.childNodes;
-  const headArray = [];
-  headPath.forEach((child) => {
-    const childNodes = child.childNodes;
-    for (let i = 0; i < childNodes.length; i++) {
-      headArray.push(childNodes[i]);
-    }
-  });
-
-  //only face color
-  headArray[4].setAttribute("fill", `rgb(${r},${g},${b})`); 
-}
 
 function showDefaultCat() {
   const defaultAnim = lottie.loadAnimation({
@@ -116,7 +67,7 @@ function showDefaultCat() {
     renderer: "svg",
     loop: false,
     autoplay: false,
-    path: catPath,
+    path: 'https://lottie.host/0af5520b-743c-4545-bbca-9ca7517e20bb/HYiQlMsf2M.json',
   });
 
   //set initial position
