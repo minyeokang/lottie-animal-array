@@ -6,6 +6,7 @@ const viewWidth = window.innerWidth;
 const PAW_CURSOR = "fa-paw.png";
 const randomDuration = Math.floor(Math.random() * 4) + 2;
 const randomX = Math.floor(Math.random() * 100) + 100;
+const randomY = Math.floor(Math.random() * 100) + 100;
 
 //load paw button animation
 const pawAnim = lottie.loadAnimation({
