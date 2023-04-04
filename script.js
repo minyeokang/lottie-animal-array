@@ -28,7 +28,28 @@ const pawAnim = lottie.loadAnimation({
 });
 
 //init
-button.addEventListener("click", handleButtonClick);
+
+
+if (/Android|iPhone/i.test(navigator.userAgent)) {
+  button.addEventListener("touchstart", function(){
+    
+    hideButton().then(() => {
+      handleMobileClick();
+    });
+  })
+}else{
+  button.addEventListener("click", handleButtonClick);
+}
+
+function handleMobileClick() {
+  document.addEventListener("touchstart", function (e) {
+    arrayIndex++;
+    var touch = e.touches[0];
+    console.log(touch)
+    createCatAnim(touch.clientX, touch.clientY);
+    console.log('test')
+  });
+}
 
 //functions
 function handleButtonClick() {
