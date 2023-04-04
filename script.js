@@ -16,6 +16,7 @@ const animalArray = [
 ];
 
 let arrayIndex = 0;
+const distanceFactor = 0.01;
 
 //load paw button animation
 const pawAnim = lottie.loadAnimation({
@@ -28,100 +29,20 @@ const pawAnim = lottie.loadAnimation({
 
 //init
 button.addEventListener("click", handleButtonClick);
+
 //functions
 function handleButtonClick() {
-  showDefaultCat();
   setCursor();
-  //prevent event fire if button is still visible
   hideButton().then(() => {
-    window.addEventListener("click",
-    function(e){
-      arrayIndex++;
-      createCatAnim(e.clientX, e.clientY)
-    }
-    
-  )}); 
-}
-
-function createCatAnim(x, y) {
-  
-  const catContainer = document.createElement("div");
-  catContainer.style.cssText = `position: absolute; width: 150px; left: ${x}px; top: ${y}px`;
-  document.body.appendChild(catContainer);
-
-  const catAnim = lottie.loadAnimation({
-    container: catContainer,
-    renderer: "svg",
-    loop: true,
-    autoplay: true,
-    path: animalArray[arrayIndex],
+    handleWindowClick();
   });
-  
-  const isLeftSide = x < viewWidth / 2;
-  const direction = isLeftSide ? 1 : -1;
-  let distance = Math.abs(viewWidth - x)
-  if (!isLeftSide) {
-    catContainer.style.transform = "rotateY(180deg)";
-    // distance = Math.abs(viewWidth - x) * -1
-  }
-  
-  if(arrayIndex >= animalArray.length){
-    arrayIndex = 1;
-  }
-  
-  
-  moveCat(catContainer, distance, 10, direction);
-
-  // console.log(newAnimalX)
-  
-  //how to get speed of animation. but in this case i don't need cause its also moving to randomX direction. so loop: true is enough 
-
-  // let fetchedArray;
-  // let fr;
-  // let op;
-  // let speed;
-  // Promise.all(
-  //   animalArray.map(animalUrl =>
-  //     fetch(animalUrl)
-  //       .then(response => response.json())
-  //       .catch(error => {
-  //         console.log(`${error}`);
-  //       })
-  //   )
-  // ).then(dataArray => {
-  //  fetchedArray = dataArray;
-  // }).then(()=>{
-  //   for(let i = 1; i < fetchedArray.length; i++){
-  //     fr =  fetchedArray[i].fr
-  //     op =  fetchedArray[i].op
-  //     speed = fr / op
-  //     // console.log(speed)
-  //     if(arrayIndex > 7){
-  //       console.log('test')
-  //     }
-  //   }
-  // });
 }
-
-function showDefaultCat() {
-  const defaultAnim = lottie.loadAnimation({
-    container: defaultCat,
-    renderer: "svg",
-    loop: false,
-    autoplay: false,
-    path: animalArray[0],
+function handleWindowClick() {
+  window.addEventListener("click", function (e) {
+    arrayIndex++;
+    createCatAnim(e.clientX, e.clientY);
   });
-
-  //set initial position
-  defaultCat.style.cssText = `position: absolute; width: 150px; left: ${
-    viewWidth / 2
-  }px`;
-
-  defaultAnim.play();
-//play only once! 
-  moveCat(defaultCat, 100, 1, 1);
 }
-
 function setCursor() {
   const element = document.body;
   element.style.cursor = `url(${PAW_CURSOR}), auto`;
@@ -141,10 +62,38 @@ function hideButton() {
   });
 }
 
-const moveCat = (element, xVal, dur, int) => {
+function createCatAnim(x, y) {
+  const catContainer = document.createElement("div");
+  catContainer.style.cssText = `position: absolute; width: 150px; left: ${x}px; top: ${y}px`;
+  document.body.appendChild(catContainer);
+
+  const catAnim = lottie.loadAnimation({
+    container: catContainer,
+    renderer: "svg",
+    loop: true,
+    autoplay: true,
+    path: animalArray[arrayIndex % animalArray.length], //create svg in order
+  });
+
+  const isLeftSide = x < viewWidth / 2;
+  const direction = isLeftSide ? 1 : -1;
+  let distance = Math.abs(viewWidth - x);
+
+  if (!isLeftSide) {
+    catContainer.style.transform = "rotateY(180deg)";
+    distance = viewWidth - distance + parseInt(catContainer.style.width);
+  }
+
+  catAnim.addEventListener("data_ready", function () {
+    moveCat(catContainer, distance * direction, distance * distanceFactor);
+  });
+
+  arrayIndex %= animalArray.length; //no need to reset arrayIndex, just divide it. result 0 = reset to beginning of array.
+}
+
+const moveCat = (element, xVal, dur) => {
   gsap.to(element, {
+    x: xVal,
     duration: dur,
-    x: int === -1 ? -xVal : xVal,
-    onComplete: () => gsap.to(element, { opacity: 0 }),
   });
 };
