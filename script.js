@@ -1,5 +1,4 @@
 //default
-const defaultCat = document.getElementById("lottie-home");
 const pawPath = "https://assets2.lottiefiles.com/packages/lf20_ypqxhono.json";
 const button = document.querySelector("button");
 const viewWidth = window.innerWidth;
@@ -15,8 +14,11 @@ const animalArray = [
   "https://assets3.lottiefiles.com/packages/lf20_xBGyhl.json",
 ];
 
+//start from 0 
 let arrayIndex = 0;
-const distanceFactor = 0.01;
+
+//speed control 
+const distanceFactor = 0.01; 
 
 //load paw button animation
 const pawAnim = lottie.loadAnimation({
@@ -28,27 +30,14 @@ const pawAnim = lottie.loadAnimation({
 });
 
 //init
-
-
 if (/Android|iPhone/i.test(navigator.userAgent)) {
   button.addEventListener("touchstart", function(){
-    
     hideButton().then(() => {
       handleMobileClick();
     });
   })
-}else{
+} else {
   button.addEventListener("click", handleButtonClick);
-}
-
-function handleMobileClick() {
-  document.addEventListener("touchstart", function (e) {
-    arrayIndex++;
-    var touch = e.touches[0];
-    console.log(touch)
-    createCatAnim(touch.clientX, touch.clientY);
-    console.log('test')
-  });
 }
 
 //functions
@@ -58,12 +47,22 @@ function handleButtonClick() {
     handleWindowClick();
   });
 }
+
 function handleWindowClick() {
   window.addEventListener("click", function (e) {
     arrayIndex++;
-    createCatAnim(e.clientX, e.clientY);
+    createCatAnim(e.clientX, e.clientY, 150);
   });
 }
+
+function handleMobileClick() {
+  document.addEventListener("touchstart", function (e) {
+    arrayIndex++;
+    let touch = e.touches[0];
+    createCatAnim(touch.clientX, touch.clientY, 80);
+  });
+}
+
 function setCursor() {
   const element = document.body;
   element.style.cursor = `url(${PAW_CURSOR}), auto`;
@@ -83,9 +82,9 @@ function hideButton() {
   });
 }
 
-function createCatAnim(x, y) {
+function createCatAnim(x, y, w) {
   const catContainer = document.createElement("div");
-  catContainer.style.cssText = `position: absolute; width: 150px; left: ${x}px; top: ${y}px`;
+  catContainer.style.cssText = `position: absolute; width: ${w}px; left: ${x}px; top: ${y}px`;
   document.body.appendChild(catContainer);
 
   const catAnim = lottie.loadAnimation({
@@ -110,6 +109,7 @@ function createCatAnim(x, y) {
   });
 
   arrayIndex %= animalArray.length; //no need to reset arrayIndex, just divide it. result 0 = reset to beginning of array.
+
 }
 
 const moveCat = (element, xVal, dur) => {

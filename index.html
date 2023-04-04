@@ -26,12 +26,6 @@
       justify-content: center;
     }
     
-/***control size of container not lottie svg itself***/
-    #lottie-home {
-      width: 150px;
-      height: 150px;
-    }
-   
     button {
       background: none;
       border: 0;
@@ -41,12 +35,16 @@
       transition: all .5s;
       
     }
+    div:not(.flex){
+      width: 100px;
+      height: 100px;
+    }
   </style>
 </head>
 
 <body>
   <div class="flex">
-    <div id="lottie-home"></div>
+    <div></div>
     <button></button>
   </div>
 
